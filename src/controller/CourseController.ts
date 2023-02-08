@@ -1,16 +1,21 @@
 import { Request, Response } from "express"
 import { CourseBusiness } from "../business/CourseBusiness"
+import { CourseDTO } from "../dto/CourseDTO"
 import { BaseError } from "../errors/BaseError"
 
 export class CourseController {
+    constructor(
+        private courseDTO: CourseDTO,
+        private courseBusiness: CourseBusiness
+    ){}
     public getCourses = async (req: Request, res: Response) => {
         try {
             const input = {
                 q: req.query.q
             }
 
-            const courseBusiness = new CourseBusiness()
-            const output = await courseBusiness.getCourses(input)
+            // const courseBusiness = new CourseBusiness()
+            const output = await this.courseBusiness.getCourses(input)
 
             res.status(200).send(output)
         } catch (error) {
@@ -27,14 +32,19 @@ export class CourseController {
     public createCourse = async (req: Request, res: Response) => {
         try {
 
-            const input = {
-                id: req.body.id,
-                name: req.body.name,
-                lessons: req.body.lessons
-            }
+            // const input = {
+            //     id: req.body.id,
+            //     name: req.body.name,
+            //     lessons: req.body.lessons
+            // }
+            const input = this.courseDTO.createCourseInput(
+                req.body.id,
+                req.body.name,
+                req.body.lessons
+            )
 
-            const courseBusiness = new CourseBusiness()
-            const output = await courseBusiness.createCourse(input)
+            // const courseBusiness = new CourseBusiness()
+            const output = await this.courseBusiness.createCourse(input)
 
             res.status(201).send(output)
         } catch (error) {
@@ -58,8 +68,8 @@ export class CourseController {
                 newLessons: req.body.lessons
             }
 
-            const courseBusiness = new CourseBusiness()
-            const output = await courseBusiness.editCourse(input)
+            // const courseBusiness = new CourseBusiness()
+            const output = await this.courseBusiness.editCourse(input)
 
             res.status(200).send(output)
         } catch (error) {
@@ -80,8 +90,8 @@ export class CourseController {
                 idToDelete: req.params.id
             }
 
-            const courseBusiness = new CourseBusiness()
-            const output = await courseBusiness.deleteCourse(input)
+            // const courseBusiness = new CourseBusiness()
+            const output = await this.courseBusiness.deleteCourse(input)
 
             res.status(200).send(output)
         } catch (error) {
